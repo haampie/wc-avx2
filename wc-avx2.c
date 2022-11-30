@@ -10,18 +10,12 @@
 int main() {
   char buf_unaligned[BUF_SIZE + 32];
   char *buf = (char *)(((uintptr_t)buf_unaligned + 31) & -32);
-  size_t num_bytes = 0, num_words = 0;
-  unsigned int all_whitespace_0 = 0;
+  size_t num_words = 0;
+  unsigned int all_whitespace_0 = -1;
 
   while (1) {
     size_t num_read = fread(buf, 1, BUF_SIZE, stdin);
     const char *p = buf;
-
-    // we should not erroneously count the first blank as the end of a word, for it is not.
-    if (num_bytes == 0 && num_read > 0 && isspace(p[0]))
-      --num_words;
-
-    num_bytes += num_read;
 
     // Vectorized loop
     for (; p + 128 <= buf + num_read; p += 128) {
@@ -61,7 +55,7 @@ int main() {
 
     if (num_read < BUF_SIZE) {
       // the last word.
-      if (num_bytes && !is_whitespace) ++num_words;
+      if (!is_whitespace) ++num_words;
       break;
     }
   }
