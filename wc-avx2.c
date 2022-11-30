@@ -61,7 +61,7 @@ int main() {
 
     if (num_read < BUF_SIZE) {
       // the last word.
-      if (!is_whitespace) ++num_words;
+      if (num_bytes && !is_whitespace) ++num_words;
       break;
     }
   }
