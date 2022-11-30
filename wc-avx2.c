@@ -42,14 +42,13 @@ int main() {
     // Clean-up loop
     int is_whitespace = (all_whitespace_0 >> 31) & 1;
     for (; p < buf + num_read; ++p) {
-      if (isspace(*p)) {
-        if (!is_whitespace) {
-          ++num_words;
-          is_whitespace = 1;
-          continue;
-        }
-      } else {
+      if (!isspace(*p)) {
         is_whitespace = 0;
+        continue;
+      }
+      if (!is_whitespace) {
+        ++num_words;
+        is_whitespace = 1;
       }
     }
 
