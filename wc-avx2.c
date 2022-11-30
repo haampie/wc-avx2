@@ -2,9 +2,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 #include <ctype.h>
-#include <unistd.h>
 #include <immintrin.h>
 
 int main() {
@@ -23,11 +21,11 @@ int main() {
       __m256i vec_2 = _mm256_load_si256((__m256i *)(p + 32));
       __m256i vec_3 = _mm256_load_si256((__m256i *)(p + 64));
       __m256i vec_4 = _mm256_load_si256((__m256i *)(p + 96));
-      __m256i whitespace_identity = _mm256_set_epi64x(0x00000d0c0b0a0900, 0x0000000000000020, 0x00000d0c0b0a0900, 0x0000000000000020);
-      unsigned int all_whitespace_1 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_1, _mm256_shuffle_epi8(whitespace_identity, vec_1)));
-      unsigned int all_whitespace_2 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_2, _mm256_shuffle_epi8(whitespace_identity, vec_2)));
-      unsigned int all_whitespace_3 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_3, _mm256_shuffle_epi8(whitespace_identity, vec_3)));
-      unsigned int all_whitespace_4 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_4, _mm256_shuffle_epi8(whitespace_identity, vec_4)));
+      __m256i lookup = _mm256_set_epi64x(0x00000d0c0b0a0900, 0x0000000000000020, 0x00000d0c0b0a0900, 0x0000000000000020);
+      unsigned int all_whitespace_1 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_1, _mm256_shuffle_epi8(lookup, vec_1)));
+      unsigned int all_whitespace_2 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_2, _mm256_shuffle_epi8(lookup, vec_2)));
+      unsigned int all_whitespace_3 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_3, _mm256_shuffle_epi8(lookup, vec_3)));
+      unsigned int all_whitespace_4 = _mm256_movemask_epi8(_mm256_cmpeq_epi8(vec_4, _mm256_shuffle_epi8(lookup, vec_4)));
       unsigned int word_end_1 = all_whitespace_1 & ~(all_whitespace_1 & ((all_whitespace_1 << 1) | (all_whitespace_0 >> 31)));
       unsigned int word_end_2 = all_whitespace_2 & ~(all_whitespace_2 & ((all_whitespace_2 << 1) | (all_whitespace_1 >> 31)));
       unsigned int word_end_3 = all_whitespace_3 & ~(all_whitespace_3 & ((all_whitespace_3 << 1) | (all_whitespace_2 >> 31)));
@@ -53,7 +51,7 @@ int main() {
     }
 
     if (num_read < BUF_SIZE) {
-      // the last word.
+      // The last word.
       if (!is_whitespace) ++num_words;
       break;
     }
